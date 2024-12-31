@@ -38,36 +38,64 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
-          // delegate : 위임하다 / Builder : 식(틀, 형태)를 만들어줌
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              childCount: 30,
-              (context, index) {
-                return ListTile(title: Text("제목 $index"));
-              },
+          SliverToBoxAdapter(
+            child: Container(color: Colors.blue, height: 300),
+          ),
+
+          SliverPersistentHeader(
+            pinned: true, // 스크롤 왔다갔다해도 해당 요소 고정
+            delegate: MySliverPersistentHeaderDelegate(
+              minHeight: 50,
+              maxHeight: 120,
+              child: Container(
+                color: Colors.yellow,
+              ),
             ),
           ),
 
-          SliverFillViewport(delegate: SliverChildBuilderDelegate(
-            childCount: 5,
-                (context, index) {
-                  return Card(
-                    child: Container(
-                      color: Colors.blue[index % 9 * 100],
-                      child: Text("Viewport"),
-                    ),
-                  );
-                },
-          )),
-
-          SliverToBoxAdapter(
-            child: Container(
-              color: Colors.red,
-              height: 300,
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: 30,
+                  (context, index) {
+                return ListTile(
+                    title: Text("제목 $index"),
+                );
+              },
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  MySliverPersistentHeaderDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  // getter (알고만 있기 / 안써도 됨)
+  @override
+  double get maxExtent => maxHeight;
+
+  // getter (알고만 있기 / 안써도 됨)
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(covariant MySliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }
